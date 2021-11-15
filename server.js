@@ -1,21 +1,39 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const port = process.env.PORT || 3000
+const env = require('./env')
 
 app.use(cors())
 app.use(express.json())
 
-// Construct JSON Objects For Each Root As Response
-
 app.get('/', (req, res) => {
-  res.send('HTTP Request To Server Root Successful!')
+  res.json("Server Initialized")
 })
 
-app.post('/', (req, res) => {
+app.get('/users/:id', (req, res) => {
+  const id = req.params.id.toString()
+  
+  let charCodes = ""
+
+  for (let i = 0; i < id.length; i++)
+  {
+    charCodes += id.charCodeAt(i)
+  }
+
+  let user = {
+    id: id,
+    email: `${charCodes}@gmail.com`,
+    username: `${charCodes}`,
+    password: `password`,
+  }
+
+  res.json(user)
+})
+
+app.post('/users', (req, res) => {
   res.json(req.body)
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(env.PORT, () => {
+  console.log(`Example app listening at http://localhost:${env.PORT}`)
 })

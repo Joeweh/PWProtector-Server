@@ -20,8 +20,33 @@ app.get('/', (req, res) => {
   res.json("Server Initialized")
 })
 
+app.get('/login/:email&:password', (req, res) => {
+  const sql = `SELECT * FROM USERS WHERE email = "${req.params.email}" AND password = "${req.params.password}"`
+
+  db.query(sql, (err, results) => {
+    try 
+    {
+      const result = results[0]
+
+      const user = {
+        id: result.id,
+        email: result.email,
+        username: result.username,
+        password: result.password
+      }
+
+      return res.json(user)
+    }
+
+    catch (error)
+    {
+      return res.json({error: "Bad Request Error"})
+    }
+  })
+})
+
 app.get('/users/:id', (req, res) => {
-  const sql = `SELECT * FROM USERS WHERE id="${req.params.id.toString()}"`
+  const sql = `SELECT * FROM USERS WHERE id="${req.params.id}"`
 
   db.query(sql, (err, results) => {
     try 
@@ -46,17 +71,53 @@ app.get('/users/:id', (req, res) => {
 })
 
 app.post('/users', (req, res) => {
-  const sql = `INSERT INTO USERS VALUES("${req.body.id}", "${req.body.email}", "${req.body.username}", "${req.body.password}")`
+  const user = req.body
+
+  const sql = `INSERT INTO USERS VALUES("${user.id}", "${user.email}", "${user.username}", "${user.password}")`
 
   db.query(sql, (err) => {
     try 
     {
-      return res.json({sucess: "Request Successful"})
+      return res.json({sucess: "Post Request Successful"})
     }
 
     catch (error)
     {
-      return res.json({error: "Bad Request Error"})
+      return res.json({error: "Bad Post Request Error"})
+    }
+  })
+})
+
+app.put('/users/:id', (req, res) => {
+  const user = req.body
+  
+  const sql = `UPDATE USERS SET id = "${user.id}", email = "${user.email}", username = "${user.username}", password = "${user.password}" WHERE id = "${req.params.id}"`
+
+  db.query(sql, (err) => {
+    try 
+    {
+      return res.json({sucess: "Put Request Successful"})
+    }
+
+    catch (error)
+    {
+      return res.json({error: "Bad Put Request Error"})
+    }
+  })
+})
+
+app.delete('/users/:id', (req, res) => {
+  const sql = `DELETE FROM USERS WHERE id = "${req.params.id}"`
+
+  db.query(sql, (err) => {
+    try 
+    {
+      return res.json({sucess: "Delete Request Successful"})
+    }
+
+    catch (error)
+    {
+      return res.json({error: "Bad Delete Request Error"})
     }
   })
 })

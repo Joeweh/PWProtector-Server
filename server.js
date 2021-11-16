@@ -20,6 +20,31 @@ app.get('/', (req, res) => {
   res.json("Server Initialized")
 })
 
+app.get('/users', (req, res) => {
+  const sql = `SELECT * FROM USERS`
+  
+  db.query(sql, (err, results) => {
+    try 
+    {
+      // const result = results[0]
+
+      // const user = {
+      //   id: result.id,
+      //   email: result.email,
+      //   username: result.username,
+      //   password: result.password
+      // }
+
+      return res.json(results)
+    }
+
+    catch (error)
+    {
+      return res.json({error: "Bad Get Request Error"})
+    }
+  })
+})
+
 app.get('/login/:email&:password', (req, res) => {
   const sql = `SELECT * FROM USERS WHERE email = "${req.params.email}" AND password = "${req.params.password}"`
 

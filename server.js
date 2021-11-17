@@ -17,7 +17,7 @@ const db = mysql.createPool({
 })
 
 app.get('/', (req, res) => {
-  res.json("Server Initialized")
+  return res.json({status: "online"})
 })
 
 app.get('/users', (req, res) => {
@@ -26,15 +26,6 @@ app.get('/users', (req, res) => {
   db.query(sql, (err, results) => {
     try 
     {
-      // const result = results[0]
-
-      // const user = {
-      //   id: result.id,
-      //   email: result.email,
-      //   username: result.username,
-      //   password: result.password
-      // }
-
       return res.json(results)
     }
 
@@ -45,22 +36,13 @@ app.get('/users', (req, res) => {
   })
 })
 
-app.get('/login/:email&:password', (req, res) => {
-  const sql = `SELECT * FROM USERS WHERE email = "${req.params.email}" AND password = "${req.params.password}"`
+app.post('/login', (req, res) => {
+  const sql = `SELECT * FROM USERS WHERE email = "${req.body.email}" AND password = "${req.body.password}"`
 
   db.query(sql, (err, results) => {
     try 
     {
-      const result = results[0]
-
-      const user = {
-        id: result.id,
-        email: result.email,
-        username: result.username,
-        password: result.password
-      }
-
-      return res.json(user)
+      return res.json(results[0])
     }
 
     catch (error)
@@ -70,22 +52,13 @@ app.get('/login/:email&:password', (req, res) => {
   })
 })
 
-app.get('/users/:id', (req, res) => {
-  const sql = `SELECT * FROM USERS WHERE id="${req.params.id}"`
+app.post('/user', (req, res) => {
+  const sql = `SELECT * FROM USERS WHERE id="${req.body.id}"`
 
   db.query(sql, (err, results) => {
     try 
     {
-      const result = results[0]
-
-      const user = {
-        id: result.id,
-        email: result.email,
-        username: result.username,
-        password: result.password
-      }
-
-      return res.json(user)
+      return res.json(results[0])
     }
 
     catch (error)
@@ -113,10 +86,10 @@ app.post('/users', (req, res) => {
   })
 })
 
-app.put('/users/:id', (req, res) => {
+app.put('/user', (req, res) => {
   const user = req.body
   
-  const sql = `UPDATE USERS SET id = "${user.id}", email = "${user.email}", username = "${user.username}", password = "${user.password}" WHERE id = "${req.params.id}"`
+  const sql = `UPDATE USERS SET email = "${user.email}", username = "${user.username}", password = "${user.password}" WHERE id = "${user.id}"`
 
   db.query(sql, (err) => {
     try 
@@ -131,8 +104,8 @@ app.put('/users/:id', (req, res) => {
   })
 })
 
-app.delete('/users/:id', (req, res) => {
-  const sql = `DELETE FROM USERS WHERE id = "${req.params.id}"`
+app.delete('/users', (req, res) => {
+  const sql = `DELETE FROM USERS WHERE id = "${req.body.id}"`
 
   db.query(sql, (err) => {
     try 
